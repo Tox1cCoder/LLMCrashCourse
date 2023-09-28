@@ -1,9 +1,20 @@
-import chainlit as cl
-import openai
 import os
 
-os.environ['OPENAI_API_KEY'] = ''
+import chainlit as cl
+import openai
 
-@cl.on_messsage
+os.environ['OPENAI_API_KEY'] = ''
+openai.api_key = ''
+
+
+@cl.on_message
 async def main(message: str):
-    await cl.Message(content = message).send()
+    response = openai.ChatCompletion.create(
+        model='gpt-4',
+        message=[
+            {"role": "assistant", "content": "you are a helpful assistant"},
+            {"role": "user", "content": message}
+        ],
+        temperature=1,
+    )
+    await cl.Message(content=f"{response['choices'][0]['message']['content']}",).send()
